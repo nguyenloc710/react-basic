@@ -1,4 +1,5 @@
 import React from "react";
+import ChildComponent from './ChildComponent';
 
 class MyComponent extends React.Component {
     /**
@@ -6,40 +7,51 @@ class MyComponent extends React.Component {
      * Fragment : Giúp trả về 2 thẻ div
      * @returns 
      */
-
     state = {
-        name: 'BEST',
-        channel: 'Hoi BEST'
+        firstName: '',
+        lastName: '',
+        arrJobs: [
+            {id: 'abcJob1', title: 'Developer', salary: '500 $'},
+            {id: 'abcJob2', title: 'Tester', salary: '1500 $'},
+            {id: 'abcJob3', title: 'Project', salary: '5100 $'}
+        ]
     }
-
-    handleOnChangeName = (event) => {
-        console.log(event.target.value, 'event target: ', event.target, 'event object: ', event)
+    handleChangeFirstName = (event) => {
         this.setState({
-            name: event.target.value
+            firstName: event.target.value
         })
     }
-    handleClickButton = () => {
-        console.log('hit the button')
-        alert('click me')
+    handleChangeLastName = (event) => {
+        this.setState({
+            lastName: event.target.value
+        })
+    }
+    handleSubmit = (event) => {
+        event.preventDefault()
+        console.log('>>> Check data input: ', this.state)
     }
     render() {
-        let name = 'BEST'
         console.log('>>> can render: ', this.state)
         return (
             <>
-                <div className="first">
-                    {console.log('My name is :', name)}
-                    <input value={this.state.name} type="text"
-                        onChange={(event) => this.handleOnChangeName(event)} />
-                    MyComponent SOS, My name is {this.state.name}
-                </div>
-                <div className="serond">
-                    {console.log('My name is :', name)}
-                    MyComponent youtube channel : {this.state.channel}
-                </div>
-                <div className="third">
-                    <button onClick={() => this.handleClickButton()}>Click me</button>
-                </div>
+                <form>
+                    <label htmlFor="fname">First name:</label><br />
+                    <input type="text" value={this.state.firstName} onChange={(evnet) => this.handleChangeFirstName(evnet)} /><br />
+                    <label htmlFor="lname">Last name:</label><br />
+                    <input type="text" value={this.state.lastName} onChange={(evnet) => this.handleChangeLastName(evnet)} /><br /><br />
+                    <input type="submit" value="Submit"
+                        onClick={(event) => this.handleSubmit(event)}
+                    />
+                </form>
+
+                <ChildComponent 
+                    name={this.state.firstName}
+                    age={this.state.lastName}
+                    arrJobs={this.state.arrJobs}/>
+                {/* <ChildComponent 
+                    name={'2'}/>
+                <ChildComponent 
+                    name={'3'}/> */}
             </>
         )
     }
