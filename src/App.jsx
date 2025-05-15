@@ -5,29 +5,20 @@ import TodoTitle from "./components/todo/TodoTitle";
 import reactLogo from "./assets/react.svg";
 import { useState } from "react";
 function App() {
-  const [todoList, setTodoList] = useState([
-    {
-      id: 1,
-      name: "Learning React"
-    }, {
-      id: 2,
-      name: "Youtube React"
-    }
-  ])
+  const [todoList, setTodoList] = useState([])
 
-
-  const hoidanit = "LOC";
-  const age = 25;
-  const data = {
-    address: "ha noi",
-    contruy: "viet nam"
-  }
   const addNewTodo = (name) => {
     const newTodo = {
       id: randomIntFromInterval(1, 10000000),
       name: name
     }
     setTodoList([...todoList, newTodo])
+  }
+
+  const deleteTodo = (id) => {
+    const newTodo = todoList.filter(item => item.id !== id)
+    console.log(">>>>>", id);
+    setTodoList(newTodo)
   }
 
   const randomIntFromInterval = (min, max) => { // min and max included 
@@ -40,15 +31,15 @@ function App() {
       <TodoNew
         addNewTodo={addNewTodo}
       />
-      <TodoData
-        name={hoidanit}
-        age={age}
-        data={data}
-        todoList={todoList}
-      />
-      <div className="todo-image">
-        <img className="logo" src={reactLogo} alt="" />
-      </div>
+      {todoList.length > 0 ?
+        <TodoData
+          todoList={todoList}
+          deleteTodo={deleteTodo}
+        />
+        : <div className="todo-image">
+          <img className="logo" src={reactLogo} alt="" />
+        </div>}
+
     </div>
   );
 }
