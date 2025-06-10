@@ -5,12 +5,21 @@ import { fetchAllUserApi } from '../service/api.service';
 
 const UserPage = () => {
     const [dataUsers, setDataUser] = useState([])
+    const [current, setCurrent] = useState(1);
+    const [pageSize, setPageSize] = useState(3);
+    const [total, setTotal] = useState(0);
+
     useEffect(() => {
         loadUsers();
-    }, []);
+    }, [current, pageSize]);
     const loadUsers = async () => {
-        const res = await fetchAllUserApi()
-        setDataUser(res.data)
+        const res = await fetchAllUserApi(current, pageSize);
+        if (res.data) {
+        setDataUser(res.data.result)
+        setTotal(res.data.meta.total)
+        setCurrent(res.data.meta.current)
+        setPageSize(res.data.meta.pageSize)        
+        }
 
     }
     return (
@@ -19,6 +28,12 @@ const UserPage = () => {
             <UserTable 
             dataUsers={dataUsers} 
             loadUsers={loadUsers}
+            current={current}
+            pageSize={pageSize}
+            total={total}
+            setCurrent={setCurrent}
+            setPageSize={setPageSize}   
+            setTotal={setTotal}
             />
         </div>
     )

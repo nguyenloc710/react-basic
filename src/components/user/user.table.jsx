@@ -6,7 +6,10 @@ import ViewUserDetail from './view.user.detail';
 import { deleteUserApi } from "../../service/api.service";
 
 const UserTable = (props) => {
-    const { dataUsers, loadUsers } = props;
+    const { dataUsers, loadUsers,
+        current, pageSize, total,
+        setCurrent, setPageSize, setTotal
+    } = props;
 
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
@@ -34,6 +37,14 @@ const UserTable = (props) => {
     };
 
     const columns = [
+        {
+            title: "STT",
+            render: (_, __, index) => {
+                return (
+                    <>{(index + 1) + (current - 1)*pageSize}</>
+                )
+            }
+        },
         {
             title: 'Id',
             dataIndex: '_id',
@@ -80,10 +91,33 @@ const UserTable = (props) => {
         },
     ];
 
+    const onChange = (pagination, filters, sorter, extra) => {
+        if(pagination && pagination.current) {
+            if (+pagination.current !== +current) {
+                setCurrent(+pagination.current);
+            }
+        }
+        if(pagination && pagination.pageSize) {
+            if (+pagination.pageSize !== +pageSize) {
+                setPageSize(+pagination.pageSize);
+            }
+        }
+        
+        console.log('params', pagination, filters, sorter, extra);
+    }
 
     return (
         <>
-            <Table columns={columns} dataSource={dataUsers} rowKey={"_id"} />
+            <Table columns={columns} dataSource={dataUsers} rowKey={"_id"}
+                pagination={{
+                    current: current,
+                    pageSize: pageSize,
+                    showSizeChanger: true,
+                    total: total,
+                    showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total}</div>) }
+                }}
+                onChange={onChange}
+            />
             <UpdateUserModal
                 setIsModalUpdateOpen={setIsModalUpdateOpen}
                 isModalUpdateOpen={isModalUpdateOpen}
@@ -96,6 +130,7 @@ const UserTable = (props) => {
                 setdataDetail={setdataDetail}
                 detailOpen={detailOpen}
                 setIsDetailOpen={setIsDetailOpen}
+                loadUsers={loadUsers}
             />
         </>
     );
